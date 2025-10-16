@@ -259,7 +259,7 @@ def example_mixture():
     data = generate_data()
 
     # Fit and sample
-    model = SimpleMixtureOfGaussians(n_components=2)
+    model = MixtureOfGaussian(n_components=2)
     model.fit(data)
     samples = model.sample(1000)
 
