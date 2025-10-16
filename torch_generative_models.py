@@ -1,4 +1,5 @@
 import torch
+import matplotlib.pyplot as plt
 
 
 # ============================================================================
@@ -16,7 +17,7 @@ class GaussianGenerator:
         print(f"Learned: mean={self.mean:.4f}, std={self.std:.4f}")
 
     def sample(self, n_samples:int = 1) -> torch.Tensor:
-        return torch.normal(self.mean, self.std, size=(n_samples,))
+        return torch.normal(mean=self.mean.item(), std=self.std.item(), size=(n_samples,))
 
 # ============================================================================
 # MIXTURE OF GAUSSIANS (EM ALGORITHM)
