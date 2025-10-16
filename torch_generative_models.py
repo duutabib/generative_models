@@ -149,7 +149,8 @@ class BootstrapGenerator:
         
     def sample(self, n_samples:int =1) -> torch.Tensor:
         """ Randomly sample from stored data (with replacement) """
-        return torch.multinomial(self.data, n_samples, replacement=True)
+        indices = torch.randint(0, len(self.data), (n_samples, ))
+        return self.data[indices]
 
 
    
