@@ -45,9 +45,9 @@ class MixtureOfGaussian:
             # E-step: compute responsibilities
             responsibilities = torch.zeros((n, self.n_components))
             for k in range(self.n_components):
-                responsibilities[:, k] = self.weights[k] * self._gaussian(
+                responsibilities[:, k] = (self.weights[k] * self._gaussian(
                     data, self.means[k], self.stds[k]
-                )
+                )).squeeze()
             responsibilities /= responsibilities.sum(dim=1, keepdim=True) + 1e-10 
 
 
@@ -67,7 +67,7 @@ class MixtureOfGaussian:
 
     def _gaussian(self, x:torch.Tensor, mean:torch.Tensor, std:torch.Tensor) -> torch.Tensor:
        """Gaussian probability density""" 
-       return torch.exp(-0.5 * ((x - mean)/std)**2) / (std * torch.sqrt(2 * torch.pi))
+       return torch.exp(-0.5 * ((x - mean)/std)**2) / (std * (2 * torch.pi) ** 0.5)
             
                     
 
@@ -82,11 +82,13 @@ class MixtureOfGaussian:
 
         """
         components = torch.multinomial(self.weights, n_samples, replacement=True)
+        samples = torch.zeros(n_samples)
         
 
         # Sample from components
         for k in range(self.n_components):
             mask = components == k
+            n_k = mask.sum().item()
             if n_k > 0:
                 samples[mask] = torch.normal(mean=self.means[k].item(), std=self.stds[k].item(), size = (n_k, ))
         return samples 
